@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 typedef int8_t i8;
 typedef int16_t i16;
@@ -20,7 +21,7 @@ res* createResultSet(i32 data, bool isFound);
  * pass the array, the start and end? that makes sense to me oh and also the target integer in whcih we want to find 
  * return value as an int though, not sure about that. maybe a struct 
  */
-res* recurs(int *arr,int size, i16 start, i16 end, i16 target);
+res* recurs(i16 *arr,int size, i16 start, i16 end, i16 target);
 
 
 int main (){
@@ -34,12 +35,15 @@ int main (){
     for(int i = 0; i < (sizeof(sortedArray) / sizeof(sortedArray[0])); i++){
         printf("%d, ", sortedArray[i]);
     }
-
+    fflush(stdout);
     printf("\n\nSorting...");
-    int size = sizeof(sortedArray);
-    i16 am = size / sizeof(sortedArray[0]);
-    i16 target = 1;
-    res* result = recurs(sortedArray, size, 0, am, target );
+    i16 size = sizeof(sortedArray) / sizeof(sortedArray[0]);
+    i16 target = 22;
+    res* result = recurs(sortedArray, size, 0, size -1, target );
+
+    if (result->found == true){
+        printf("\nFound\n");
+    }
     return 0;
 }
 
@@ -47,16 +51,30 @@ int main (){
 /**
  * recursively iterate and return the result structure
  */
-res* recurs(int *inarr,int size, i16 start, i16 end, i16 target){
+res* recurs(i16 *inarr,int size, i16 start, i16 end, i16 target){
 
-    i16 i = (start + end) / 2;
-    while(inarr[i] != target){
+    i16 mid = (start + end) / 2; //find mid
+    while(inarr[mid] != target && start <= end){
+        if (target > inarr[mid]){
+            start = mid + 1;   
+        }
+        else{
+            end = mid -1;
+        }
 
+        mid = (start + end) / 2;
     }
-    return 0;
+
+    if(inarr[mid] == target){
+        return createResultSet(mid, true);
+    }
+    return createResultSet(0, false);
 }
 
 res* createResultSet(i32 data, bool isFound){
+    res *nrs = malloc(sizeof(res));
+    nrs->data = data;
+    nrs->found = isFound;
 
-
+    return nrs;
 }
