@@ -30,17 +30,22 @@ int main(){
 
     arrayTracking arr[20]; //create array of structs
 
+    for(int i = 0; i < sizeof(nums) / sizeof(nums[0]); i++){
+        arr[i].value = nums[i];
+        arr[i].originalIndex = i;
+    }
+
     return 0;
 }
 
 
-arrayTracking* createNode(int value, int originalIndex, int size){
+// arrayTracking* createNode(int value, int originalIndex, int size){
 
-    arrayTracking *aT = malloc(sizeof(aT));
-    aT->value = value;
-    aT->originalIndex = originalIndex;
+//     arrayTracking *aT = malloc(sizeof(aT));
+//     aT->value = value;
+//     aT->originalIndex = originalIndex;
 
-    return aT;
-}
+//     return aT;
+// }
 
 
