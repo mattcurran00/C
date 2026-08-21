@@ -1,7 +1,7 @@
 #include <stdio.h>
-
-
-
+/**
+ * Program to take in an array of integers and perform a merge sort on them
+ */
 void merge(int *left, int leftsize, int *right, int rightsize, int *result, int length);
 void mergeSort(int *numbers, int length);
 
