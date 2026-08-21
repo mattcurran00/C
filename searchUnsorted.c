@@ -13,7 +13,7 @@ void recursiveBinary();
 result* createResultSet(int data, bool isFound);
 
 
-void binarySearch(int *arr, int length);
+result* binarySearch(int *arr, int length, int target);
 
 int main(){
 
@@ -33,10 +33,7 @@ int main(){
         printf("%d, ", numbers[i]);
     }
 
-    binarySearch(numbers, numbersLength); //using typedef means i dont actually assign the value
-
-   
-
+    binarySearch(numbers, numbersLength, target); //using typedef means i dont actually assign the value
 
     return 0;
 }
@@ -91,5 +88,33 @@ void merge(int *left, int *right, int leftlength, int rightlenght, int *inarr){
         inarr[resultindex] = right[rightindex];
         resultindex++;
         rightindex++;
+    }
+}
+
+/**
+ * so we've gotten a decent bit here, just eed to take another look at the splitting 
+ * logic in order to split the arrays right, and also test the merge sort
+ * although i do think its fine. What I noticed is that it will probably be more common to be 
+ * asked to maintain/return the ORIGINAL index of the number being searched, pre-sort
+ * use the other file in here to use an array of structs instead and easily do it that way
+ */
+result* createResultSet(int data, bool isFound){
+
+    result *newResultSet = malloc(sizeof(result));
+    newResultSet->number = data;
+    newResultSet->isFound = isFound;
+
+    return newResultSet;
+}
+
+result* binarySearch(int *arr, int length, int target){
+    int mid = length / 2;
+    
+    if(arr[mid] == target){
+        return createResultSet(arr[mid], true); //create result set for being found
+    }
+
+    if(target < arr[mid]){
+
     }
 }
