@@ -114,7 +114,13 @@ result* binarySearch(int *arr, int length, int target){
         return createResultSet(arr[mid], true); //create result set for being found
     }
 
-    if(target < arr[mid]){
-
+    if(arr[mid] < target){
+        int temp[length - mid];
+        for(int i = 0; i < length; i++){
+            temp[i] = arr[mid + i];
+        }
+        
     }
+
+    
 }
