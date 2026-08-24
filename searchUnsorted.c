@@ -7,13 +7,11 @@ typedef struct{
     bool isFound;
 }result;
 
+result resultSet; //just declare the result set globally to avoid all the weird shit with having binary return something. 
+
 void merge(int *left, int *right, int leftlength, int rightlength, int *result);
 void mergeSort(int *numbers, int length);
-void recursiveBinary();
-result* createResultSet(int data, bool isFound);
-
-
-result* binarySearch(int *arr, int length, int target);
+void binarySearch(int *arr, int length, int target);
 
 int main(){
 
@@ -33,7 +31,16 @@ int main(){
         printf("%d, ", numbers[i]);
     }
 
+    fflush(stdout);
+    printf("\nBEGIN BINARY SEARCH...\n");
     binarySearch(numbers, numbersLength, target); //using typedef means i dont actually assign the value
+
+    if(resultSet.isFound == true){
+        printf("\nBinary Search complete.\nNumber found: TRUE\nIndex: %d", resultSet.number);
+    }
+    else{
+        printf("\nBinary Search complete.\nNumber found: FALSE");
+    }
 
     return 0;
 }
@@ -91,36 +98,31 @@ void merge(int *left, int *right, int leftlength, int rightlenght, int *inarr){
     }
 }
 
-/**
- * so we've gotten a decent bit here, just eed to take another look at the splitting 
- * logic in order to split the arrays right, and also test the merge sort
- * although i do think its fine. What I noticed is that it will probably be more common to be 
- * asked to maintain/return the ORIGINAL index of the number being searched, pre-sort
- * use the other file in here to use an array of structs instead and easily do it that way
- */
-result* createResultSet(int data, bool isFound){
-
-    result *newResultSet = malloc(sizeof(result));
-    newResultSet->number = data;
-    newResultSet->isFound = isFound;
-
-    return newResultSet;
-}
-
-result* binarySearch(int *arr, int length, int target){
+void binarySearch(int *arr, int length, int target){
     int mid = length / 2;
     
     if(arr[mid] == target){
-        return createResultSet(arr[mid], true); //create result set for being found
+        resultSet.isFound = true;
+        resultSet.number = mid;
+        return;
     }
 
+    if(arr[mid] != target && length <= 1){
+        resultSet.isFound = false;
+        return;
+    }
+    
+    int temp[length - mid];
     if(arr[mid] < target){
-        int temp[length - mid];
-        for(int i = 0; i < length; i++){
+        for(int i = 0; i < length - mid; i++){
             temp[i] = arr[mid + i];
         }
-        
     }
-
-    
+    else{
+        for(int i = 0; i < mid;i++){
+            temp[i] = arr[i]; //i think this is right, logic is that the temp array should be indexing the same as the input array since it is the left half 
+        }
+    }
+    int tlength = sizeof(temp) / sizeof(temp[0]);
+    binarySearch(temp, tlength, target);  
 }
