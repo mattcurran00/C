@@ -7,56 +7,80 @@ typedef struct{
     bool isFound;
 }result;
 
-void merge(int *left, int *right, int leftlength, int rightlength, int *result);
-void mergeSort(int *numbers, int length);
-void recursiveBinary();
-result* createResultSet(int data, bool isFound);
+/**
+ * struct needed in order to maintain the appropriate index of the array
+ */
+typedef struct{
+    int value;
+    int originalIndex;
+    int postIndex;
+}element;
 
+result resultSet; //just declare the result set globally to avoid all the weird shit with having binary return something. 
 
-void binarySearch(int *arr, int length);
+void merge(element *left, element *right, int leftlength, int rightlength, element *result);
+void mergeSort(element *numbers, int length);
+void binarySearch(element *arr, int length, int target);
 
 int main(){
-
+    
     int numbers[] = { 73, 12, 89, 4, 56, 31, 97, 25, 68, 10, 42, 85, 19, 63, 7, 54, 38, 91, 16, 47};
     int numbersLength = sizeof(numbers) / sizeof(numbers[0]);
+    element newNumbers[numbersLength];
+
+    //copy original array values and indexes into the structure array fields
+    for(int i = 0; i < numbersLength; i++){
+        newNumbers[i].value = numbers[i];
+        newNumbers[i].originalIndex = i;
+    }
     int target;
     printf("Search for a number in an unsorted array\n");
     printf("Target Number: ");
     fflush(stdin);
     scanf("%d", &target);
 
-    mergeSort(numbers, numbersLength);
+    mergeSort(newNumbers, numbersLength);
 
     fflush(stdout);
     printf("\nSORTED TEST: ");
     for(int i = 0; i < numbersLength; i++){
-        printf("%d, ", numbers[i]);
+        printf("%d, ", newNumbers[i].value);
     }
 
-    binarySearch(numbers, numbersLength); //using typedef means i dont actually assign the value
+    fflush(stdout);
+    printf("\nBEGIN BINARY SEARCH...\n");
+    binarySearch(newNumbers, numbersLength, target); //using typedef means i dont actually assign the value
 
-   
-
+    if(resultSet.isFound == true){
+        printf("\nBinary Search complete.\nNumber found: TRUE\nIndex: %d", resultSet.number);
+    }
+    else{
+        printf("\nBinary Search complete.\nNumber found: FALSE");
+    }
 
     return 0;
 }
 
-void mergeSort(int *inarr, int length){
+void mergeSort(element *inarr, int length){
 
     if(length <= 1){
         return;
     }
-    int mid = length / 2;
-    int left[mid];
-    int right[length - mid];
-    int leftlength = sizeof(left) / sizeof(left[0]);
-    int rightlength = sizeof(right) / sizeof(right[0]);
 
-    for(int i = 0; i < mid; i++){
+    int mid = length / 2;
+
+    element left[mid];
+    element right[length - mid];
+
+    int leftlength = mid;
+    int rightlength = length - mid;
+
+    for(int i = 0; i < leftlength; i++){
         left[i] = inarr[i];
     }
-    for(int i = mid; i < length; i++){
-        right[i - mid] = inarr[i];
+
+    for(int i = 0; i < rightlength; i++){
+        right[i] = inarr[mid + i];
     }
 
     mergeSort(left, leftlength);
@@ -65,31 +89,62 @@ void mergeSort(int *inarr, int length){
     merge(left, right, leftlength, rightlength, inarr);
 }
 
-void merge(int *left, int *right, int leftlength, int rightlenght, int *inarr){
+void merge(element *left, element *right, int leftlength,
+           int rightlength, element *inarr){
 
     int leftindex = 0;
     int rightindex = 0;
     int resultindex = 0;
 
-    while(leftindex < leftlength && rightindex < rightlenght){
-        if(left[leftindex] >= right[rightindex]){
+    while(leftindex < leftlength && rightindex < rightlength){
+
+        if(left[leftindex].value >= right[rightindex].value){
             inarr[resultindex] = right[rightindex];
             rightindex++;
         }
         else{
             inarr[resultindex] = left[leftindex];
-            leftindex++; 
+            leftindex++;
         }
+
         resultindex++;
     }
+
     while(leftindex < leftlength){
         inarr[resultindex] = left[leftindex];
         resultindex++;
         leftindex++;
     }
-    while(rightindex < rightlenght){
+
+    while(rightindex < rightlength){
         inarr[resultindex] = right[rightindex];
         resultindex++;
         rightindex++;
     }
+}
+
+void binarySearch(element *arr, int length, int target){
+
+    int low = 0;
+    int high = length - 1;
+
+    while(low <= high){
+
+        int mid = (low + high) / 2;
+
+        if(arr[mid].value == target){
+            resultSet.isFound = true;
+            resultSet.number = arr[mid].originalIndex;
+            return;
+        }
+
+        if(arr[mid].value < target){
+            low = mid + 1;
+        }
+        else{
+            high = mid - 1;
+        }
+    }
+
+    resultSet.isFound = false;
 }
